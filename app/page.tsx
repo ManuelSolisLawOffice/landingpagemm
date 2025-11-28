@@ -154,7 +154,10 @@ export default function LandingPage() {
               }}
               poster="/poster-image.jpg"
             >
-              <source src="/video-landing.mp4" type="video/mp4" />
+              <source
+                src="https://nsobmmznmkbwpcfo.public.blob.vercel-storage.com/video-landing.mp4"
+                type="video/mp4"
+              />
             </video>
 
             {/* Botón Mute */}
@@ -207,7 +210,6 @@ export default function LandingPage() {
               gap: '12px'
             }}
           >
-            {/* Anillo pulsante */}
             <div className="animate-pulse-ring" style={{
               position: 'absolute',
               top: '-6px',
@@ -219,7 +221,6 @@ export default function LandingPage() {
               backgroundColor: 'rgba(16, 185, 129, 0.3)'
             }}></div>
             
-            {/* Círculo del botón */}
             <div style={{
               position: 'relative',
               width: '80px',
@@ -240,7 +241,6 @@ export default function LandingPage() {
               <Phone style={{ color: 'white', width: '32px', height: '32px' }} />
             </div>
             
-            {/* Texto debajo */}
             <div style={{
               display: 'flex',
               flexDirection: 'column',
@@ -263,7 +263,6 @@ export default function LandingPage() {
             </div>
           </a>
 
-          {/* BOTÓN OPCIONES LEGALES CIRCULAR */}
           <button 
             onClick={() => console.log('Opciones legales')}
             style={{
@@ -276,7 +275,6 @@ export default function LandingPage() {
               cursor: 'pointer'
             }}
           >
-            {/* Círculo del botón */}
             <div className="glass-gold" style={{
               width: '80px',
               height: '80px',
@@ -300,7 +298,6 @@ export default function LandingPage() {
               <ShieldCheck style={{ width: '32px', height: '32px', color: '#B2904D' }} />
             </div>
             
-            {/* Texto debajo */}
             <span style={{
               fontSize: '11px',
               fontWeight: 'bold',
