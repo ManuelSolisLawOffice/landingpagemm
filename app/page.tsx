@@ -1,37 +1,51 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Phone, Volume2, VolumeX, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Phone, ArrowRight, ShieldCheck } from 'lucide-react';
 
 const PHONE_NUMBER = "+1 (346) 522 3259";
 const PHONE_LINK = "tel:+13465223259";
 const PRIMARY_COLOR = '#B2904D';
 
 export default function LandingPage() {
-  const [isMuted, setIsMuted] = useState(true);
   const [videoExpanded, setVideoExpanded] = useState(false);
+  // Referencia tipada para TypeScript
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    // Efecto para iniciar la animación de entrada
     const timer = setTimeout(() => {
       setVideoExpanded(true);
       if (videoRef.current) {
-        videoRef.current.muted = isMuted;
-        videoRef.current.play().catch((error) => {
-          console.log('Autoplay prevenido:', error);
+        // Intentamos reproducir. Debe estar muted en el tag <video> para que esto funcione siempre.
+        videoRef.current.play().catch((error: any) => {
+          console.log('Autoplay inicial prevenido:', error);
         });
       }
     }, 300);
-    return () => clearTimeout(timer);
-  }, []);
 
-  const handleToggleMute = () => {
-    if (videoRef.current) {
-      const newMutedState = !videoRef.current.muted;
-      videoRef.current.muted = newMutedState;
-      setIsMuted(newMutedState);
-    }
-  };
+    // NUEVO: Efecto para activar el sonido con el primer clic en la página
+    const handleFirstInteraction = () => {
+      if (videoRef.current) {
+        // Al primer toque, quitamos el mute y aseguramos reproducción
+        videoRef.current.muted = false;
+        videoRef.current.play().catch((e: any) => console.log("Error al activar audio:", e));
+      }
+      // Removemos el listener para que no se ejecute más de una vez
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    // Escuchamos clicks o toques en la pantalla
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
 
   return (
     <div style={{ 
@@ -42,7 +56,7 @@ export default function LandingPage() {
       overflow: 'hidden'
     }}>
       
-      {/* HEADER */}
+      {/* HEADER (Solo Logo) */}
       <header style={{
         position: 'fixed',
         top: 0,
@@ -113,12 +127,32 @@ export default function LandingPage() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        paddingTop: '120px',
+        paddingTop: '120px', // Espacio para el header fijo
         paddingLeft: '16px',
         paddingRight: '16px',
         minHeight: '100vh'
       }}>
         
+        {/* TEXTO AGREGADO (Encabezado Decorado) */}
+        <h1 style={{
+          textAlign: 'center',
+          marginTop: '20px',
+          marginBottom: '30px',
+          maxWidth: '90%',
+          // Estilos de decoración dorada
+          background: 'linear-gradient(to bottom, #ffffff 0%, #B2904D 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.5))',
+          fontSize: '28px',
+          fontWeight: '800',
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+          lineHeight: '1.2'
+        }}>
+          Manuel Solis Abogados en inmigración y accidentes
+        </h1>
+
         {/* CONTENEDOR VIDEO */}
         <div style={{
           width: '100%',
@@ -142,7 +176,9 @@ export default function LandingPage() {
               ref={videoRef}
               playsInline
               loop
-              muted={isMuted}
+              // IMPORTANTE: Debe iniciar muted para que el navegador permita el autoplay visual.
+              // El audio se activará con el primer clic en la pantalla gracias al useEffect.
+              muted 
               style={{
                 position: 'absolute',
                 top: 0,
@@ -160,28 +196,7 @@ export default function LandingPage() {
               />
             </video>
 
-            {/* Botón Mute */}
-            <button
-              onClick={handleToggleMute}
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
-                padding: '12px',
-                borderRadius: '50%',
-                backgroundColor: 'rgba(0,0,0,0.5)',
-                backdropFilter: 'blur(4px)',
-                border: '1px solid rgba(255,255,255,0.3)',
-                color: 'white',
-                cursor: 'pointer',
-                zIndex: 50,
-                transition: 'all 0.3s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = PRIMARY_COLOR}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.5)'}
-            >
-              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-            </button>
+            {/* Botón Mute ELIMINADO */}
           </div>
         </div>
 
